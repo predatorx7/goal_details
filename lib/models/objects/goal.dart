@@ -29,7 +29,7 @@ class Goal extends HiveObject {
               hours: targetTimeOfDay.hour, minutes: targetTimeOfDay.minute),
         ) {
     if (targetDate != null) {
-      assert(start <= end);
+      assert(start < end);
     }
   }
 
@@ -43,7 +43,7 @@ class Goal extends HiveObject {
   })  : assert(title != null && creationTime != null),
         this.goalType = goalType ?? GoalType.personal {
     if (targetDate != null) {
-      assert(start <= end);
+      assert(start < end);
     }
   }
 
@@ -85,7 +85,10 @@ class Goal extends HiveObject {
   @HiveField(5)
   final GoalType goalType;
   int get start => creationTime.millisecondsSinceEpoch;
-  int get end => targetDate.millisecondsSinceEpoch;
+
+  int get end => targetTimeOfDay != null
+      ? targetTime.millisecondsSinceEpoch
+      : targetDate.add(Duration(days: 1)).millisecondsSinceEpoch;
 
   /// Returns a new [Goal] with modified details.
   Goal addInfo({
@@ -131,13 +134,11 @@ class Goal extends HiveObject {
   double completedTillDateTime(DateTime currentTime) {
     if (targetDate == null) return 0.0;
     final int now = currentTime.millisecondsSinceEpoch;
-    final int realEnd =
-        targetTimeOfDay != null ? targetTime.millisecondsSinceEpoch : end;
-    if (now > realEnd) {
+    if (now > end) {
       return 1.0;
     }
     int elapsedDuration = now - start;
-    int totalDuraton = realEnd - start;
+    int totalDuraton = end - start;
     return elapsedDuration / totalDuraton;
   }
 

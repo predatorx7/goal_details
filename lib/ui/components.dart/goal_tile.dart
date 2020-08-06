@@ -1,9 +1,7 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:goal_details/models/notifier/goal.dart';
-import 'package:goal_details/models/objects/goal.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 import 'goal_form.dart';
@@ -14,6 +12,9 @@ const Color unselectedTileColor = Color(0xff8780a7);
 const Color moreOptionColor = Color(0xff658bcd);
 const Color selectedTileColor = Color(0xff466cae);
 const Color formColor = Color(0xff538eb3);
+
+const BoxConstraints _tileHeightConstraints =
+    const BoxConstraints.tightFor(height: 50);
 
 class GoalTile extends StatefulWidget {
   const GoalTile({
@@ -67,7 +68,10 @@ class _GoalTileState extends State<GoalTile> {
             ),
             // Expands the goal tile expandable
             OptionButton(
-              onPressed: controller.toggle,
+              onPressed: () {
+                changeOptionVisibility(false);
+                controller.toggle();
+              },
               icon: Icon(LineAwesomeIcons.edit, color: Colors.white),
             ),
             // share
@@ -84,19 +88,9 @@ class _GoalTileState extends State<GoalTile> {
           ],
         ),
       ),
-      replacement: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularPercentageIndicator(
-            value: provider.completed,
-            backgroundColor: unselectedTileColor,
-            strokeWidth: 2,
-          ),
-          IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () => changeOptionVisibility(true),
-          ),
-        ],
+      replacement: IconButton(
+        icon: Icon(Icons.more_vert, color: Colors.white),
+        onPressed: () => changeOptionVisibility(true),
       ),
     );
     return Padding(
@@ -107,25 +101,47 @@ class _GoalTileState extends State<GoalTile> {
       child: ExpandableNotifier(
         controller: controller,
         child: Expandable(
-          collapsed: Container(
-            decoration: BoxDecoration(
-              color: optionsVisible ? selectedTileColor : unselectedTileColor,
-              borderRadius: BorderRadius.circular(4.0),
-              border: Border.all(color: Colors.white, width: 0.2),
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Padding(
-                padding: const EdgeInsets.only(left: 18.0),
-                child: Text(
-                  provider.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
+          collapsed: GestureDetector(
+            onTap: () => changeOptionVisibility(false),
+            child: Container(
+              decoration: BoxDecoration(
+                color: optionsVisible ? selectedTileColor : unselectedTileColor,
+                borderRadius: BorderRadius.circular(4.0),
+                border: Border.all(color: Colors.white, width: 0.2),
               ),
-              onTap: () => changeOptionVisibility(false),
-              trailing: options,
+              child: Builder(builder: (context) {
+                final List<Widget> children = <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: Text(
+                      provider.title,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  ConstrainedBox(
+                    constraints: _tileHeightConstraints,
+                    child: options,
+                  ),
+                ];
+
+                if (!optionsVisible) {
+                  children.insert(
+                    1,
+                    CircularPercentageIndicator(
+                      value: provider.completed,
+                      backgroundColor: unselectedTileColor,
+                      strokeWidth: 2,
+                    ),
+                  );
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: children,
+                );
+              }),
             ),
           ),
           expanded: GoalForm(),

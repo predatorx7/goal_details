@@ -13,6 +13,7 @@ class GoalDetailsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme openSans = GoogleFonts.openSansTextTheme();
+    setupImages(context); // pre-caches images
     return MaterialApp(
       title: 'Goal details',
       theme: ThemeData(

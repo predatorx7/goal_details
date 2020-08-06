@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:goal_details/models/notifier/goal.dart';
 import 'package:goal_details/models/objects/goal.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,12 @@ class _GoalFormState extends State<GoalForm> {
     provider = Provider.of<GoalProvider>(context);
     _provideIfNull();
     super.didChangeDependencies();
+  }
+
+  IconData _showRadioFor(GoalType goalType) {
+    return tempGoalType == goalType
+        ? Icons.radio_button_checked
+        : Icons.radio_button_unchecked;
   }
 
   void _provideIfNull() {
@@ -158,6 +165,61 @@ class _GoalFormState extends State<GoalForm> {
                 );
                 _provideIfNull();
               },
+            ),
+          ),
+          Padding(
+            padding: _expansionPanelPadding.add(EdgeInsets.only(bottom: 4)),
+            child: ExpandablePanel(
+              hasIcon: false,
+              tapBodyToCollapse: false,
+              header: FormItem(
+                Text(
+                  'Goal Type',
+                  style: _whiteTextStyle,
+                ),
+                Icon(
+                  controller.expanded
+                      ? Icons.arrow_drop_up
+                      : Icons.arrow_drop_down,
+                  color: Colors.white,
+                ),
+              ),
+              expanded: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, right: 2),
+                      child: FormItem(
+                        Text('Personal', style: _whiteTextStyle),
+                        Icon(_showRadioFor(GoalType.personal),
+                            color: Colors.white),
+                        onPressed: () async {
+                          setState(() {
+                            tempGoalType = GoalType.personal;
+                          });
+                          _provideIfNull();
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, left: 2),
+                      child: FormItem(
+                        Text('Community', style: _whiteTextStyle),
+                        Icon(_showRadioFor(GoalType.community),
+                            color: Colors.white),
+                        onPressed: () async {
+                          setState(() {
+                            tempGoalType = GoalType.community;
+                          });
+                          _provideIfNull();
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           FlatButton(

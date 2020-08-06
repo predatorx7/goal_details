@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:goal_details/ui/screens/goals.dart';
 import 'package:goal_details/ui/screens/home.dart';
 
 import 'route_const.dart';
@@ -17,6 +18,8 @@ PageRoute wrapPageRoute(Widget screen, [bool useCupertinoPageRoute = true]) {
 /// Generates Routes which will be used in the application
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
+    case RouteNames.GoalsRoute:
+      return wrapPageRoute(GoalsScreen());
     case RouteNames.RootRoute:
     default:
       return wrapPageRoute(HomeScreen());

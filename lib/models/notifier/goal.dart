@@ -24,7 +24,6 @@ class GoalProvider extends ChangeNotifier {
       targetTimeOfDay: selectTimeOfDay ?? targetTimeOfDay,
       goalType: selectGoalType ?? goalType,
     );
-    print('Key type: ${_key.runtimeType.toString()}');
     await goalsBox.put(_key, goal);
     await goal.save();
     notifyListeners();
@@ -39,5 +38,10 @@ class GoalProvider extends ChangeNotifier {
 
   double get completed => goal.completed();
 
-  Future<void> delete() async => await goalsBox.delete(key);
+  Future<void> delete() async {
+    final int _key = key;
+    print('Exists? ${goalsBox.containsKey(_key)}');
+    await goalsBox.delete(_key);
+    print('Deleted. Does it still exist?: ${goalsBox.containsKey(_key)}');
+  }
 }
