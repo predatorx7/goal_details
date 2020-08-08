@@ -4,4 +4,5 @@ class RouteNames {
   // ignore: non_constant_identifier_names
   String get HomeRoute => RootRoute;
   static const String GoalsRoute = '/goals';
+  static const String GoalDescriptionRoute = '$GoalsRoute/goalInfo';
 }

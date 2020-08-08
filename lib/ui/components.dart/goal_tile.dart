@@ -1,5 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:goal_details/commons/route_const.dart';
 import 'package:goal_details/models/notifier/goal.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +82,10 @@ class _GoalTileState extends State<GoalTile> {
             ),
             // target
             OptionButton(
-              onPressed: null,
+              onPressed: () {
+                Navigator.of(context).pushNamed(RouteNames.GoalDescriptionRoute,
+                    arguments: provider);
+              },
               showRightBorder: false,
               icon: Icon(Icons.track_changes),
             ),

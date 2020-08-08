@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'goal_tile.dart';
+
 class CircularPercentageIndicator extends ProgressIndicator {
   /// Creates a circular progress indicator.
   ///
@@ -8,9 +10,9 @@ class CircularPercentageIndicator extends ProgressIndicator {
   const CircularPercentageIndicator({
     Key key,
     double value,
-    Color backgroundColor,
+    Color backgroundColor = unselectedTileColor,
     Animation<Color> valueColor,
-    this.strokeWidth = 4.0,
+    this.strokeWidth = 2.0,
     String semanticsLabel,
     String semanticsValue,
   }) : super(
